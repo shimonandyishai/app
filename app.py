@@ -100,9 +100,6 @@ if st.button('Predict Risk'):
     'thall': [thall]  # Make sure 'thall' is mapped correctly as well
 }
 
-        
-        features = pd.DataFrame(data, index=[0])
-    return features
 
 input_df = pd.DataFrame(data)
 
