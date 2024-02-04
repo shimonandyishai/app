@@ -26,15 +26,13 @@ st.title('Heart Health Analysis Dashboard')
 st.markdown("A comprehensive tool for analyzing and predicting heart health risks.")
 
 # Load your trained model
-# Load your trained model
-model_path = 'model.pkl'  # Updated to relative path
-model = None
+model_path = 'model.pkl'
 try:
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
 except Exception as e:
     st.error(f"An error occurred while loading the model: {e}")
-
+    
 # Load heart data file
 @st.cache(allow_output_mutation=True)
 def load_data():
