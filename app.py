@@ -89,6 +89,12 @@ input_df = user_input_features()
 st.subheader('User Input parameters')
 st.write(input_df)
 
+# Predict and display the result
+if st.button('Predict'):
+    result = model.predict(input_df)
+    risk_level = "High Risk" if result[0] == 1 else "Low Risk"
+    st.success(f"The predicted risk level is: {risk_level}")
+
 # Sidebar with customization options
 st.sidebar.header("Customization Options")
 threshold = st.sidebar.slider("Risk Threshold", min_value=0.1, max_value=1.0, step=0.1, value=0.8)
