@@ -183,9 +183,9 @@ else:
 st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
 
     # Use your model to predict
-    prediction = model.predict(input_data)  # Assuming 'model' is your trained model
-    risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
-    alert = "High Risk Alert" if risk_level == "High Risk" else "No Alert"
+prediction = model.predict(input_data)  # Assuming 'model' is your trained model
+risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
+alert = "High Risk Alert" if risk_level == "High Risk" else "No Alert"
 
     # Display risk level and alert
-    st.write(f"Risk Level: {risk_level}, Alert: {alert}")
+st.write(f"Risk Level: {risk_level}, Alert: {alert}")
