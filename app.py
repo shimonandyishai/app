@@ -53,6 +53,28 @@ restecg_mapping = {'Normal': 0, 'Having ST-T Wave Abnormality': 1, 'Showing Prob
 slp_mapping = {'Upsloping': 0, 'Flat': 1, 'Downsloping': 2}
 thall_mapping = {'Normal': 0, 'Fixed Defect': 1, 'Reversible Defect': 2}
 
+# Define a function to collect user inputs and create a DataFrame
+def user_input_features():
+    # Create a dictionary to store user inputs
+    input_features = {
+        'age': age,
+        'sex': sex,
+        'cp': cp,
+        'trtbps': trtbps,
+        'chol': chol,
+        'fbs': fbs,
+        'restecg': restecg,
+        'thalachh': thalachh,
+        'exng': exng,
+        'oldpeak': oldpeak,
+        'slp': slp,
+        'caa': caa,
+        'thall': thall
+    }
+
+    # Create a DataFrame from the user inputs
+    input_df = pd.DataFrame(input_features, index=[0])
+    return input_df
 
 data_heart = load_data()
 # Define the input fields for the parameters
@@ -77,35 +99,44 @@ sex = 1 if sex == 'Male' else 0
 cp = cp_mapping[cp]
 fbs = 1 if fbs == 'Yes' else 0
 restecg = restecg_mapping[restecg]
-exng = 1 if exng == 'Yes' else 0
-slp = slp_mapping[slp]
-thall = thall_mapping[thall]
-caa = int(caa)  # Make sure caa is an integer
 
-# When the user clicks the 'Predict' button, make the prediction
+# When the user clicks the 'Predict' button
 if st.button('Predict Risk'):
-    # Create a DataFrame from the user inputs
-    user_data = pd.DataFrame({
-        'age': [age],
-        'sex': [sex],
-        'cp': [cp],
-        'trtbps': [trtbps],
-        'chol': [chol],
-        'fbs': [fbs],
-        'restecg': [restecg],
-        'thalachh': [thalachh],
-        'exng': [exng],
-        'oldpeak': [oldpeak],
-        'slp': [slp],
-        'caa': [caa],
-        'thall': [thall]
-    })
-    
-    # Use the model to make a prediction
-    prediction = model.predict(user_data)
-    risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
-    st.success(f"The predicted risk level is: {risk_level}")
+    # Create a DataFrame with the selected values
+    input_df = pd.DataFrame([{
+        'age': age,
+        'sex': sex,
+        'cp': cp,
+        'trtbps': trtbps,
+        'chol': chol,
+        'fbs': fbs,
+        'restecg': restecg,
+        'thalachh': thalachh,
+        'exng': exng,
+        'oldpeak': oldpeak,
+        'slp': slp,
+        'caa': caa,
+        'thall': thall
+    }])
 
+    # If your classifier is part of a pipeline, use the whole model to predict
+    # Otherwise, use the classifier directly
+    processed_input = model.named_steps['preprocessor'].transform(input_df)  # If separate preprocessing step is needed
+    probability = model.predict_proba(processed_input)[0][1]
+
+    # Define a custom threshold
+    custom_threshold = 0.6  # This is an example, adjust based on your needs
+
+    # Apply the custom threshold to determine the risk level
+    if probability > custom_threshold:
+        risk_level = "High Risk"
+    elif probability > 0.4:  # You can define another cutoff for moderate risk
+        risk_level = "Moderate Risk"
+    else:
+        risk_level = "Low Risk"
+
+    # Display the risk level
+    st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
 
 # Sidebar with customization options
 st.sidebar.header("Customization Options")
@@ -162,30 +193,45 @@ if st.button('Predict Heart Disease Risk') and filtered_data_heart is not None:
     }])
 
     # Get user input and preprocess it
-input_df = user_input_features()
+    input_df = pd.DataFrame([{
+        'age': age,
+        'sex': sex,
+        'cp': cp,
+        'trtbps': trtbps,
+        'chol': chol,
+        'fbs': fbs,
+        'restecg': restecg,
+        'thalachh': thalachh,
+        'exng': exng,
+        'oldpeak': oldpeak,
+        'slp': slp,
+        'caa': caa,
+        'thall': thall
+    }])
 
-# Predict the probability of the positive class (e.g., high risk)
-# If your model pipeline (`model`) already includes the preprocessor and classifier, you can call predict_proba directly on it
-probability = model.predict_proba(input_df)[0][1]
+    # Predict the probability of the positive class (e.g., high risk)
+    # If your model pipeline (`model`) already includes the preprocessor and classifier, you can call predict_proba directly on it
+    probability = model.predict_proba(input_df)[0][1]
 
-# Define a custom threshold
-custom_threshold = 0.6  # This is an example, adjust based on your needs
+    # Define a custom threshold
+    custom_threshold = 0.6  # This is an example, adjust based on your needs
 
-# Apply the custom threshold to determine the risk level
-if probability > custom_threshold:
-    risk_level = "High Risk"
-elif probability > 0.4:  # You can define another cutoff for moderate risk
-    risk_level = "Moderate Risk"
-else:
-    risk_level = "Low Risk"
+    # Apply the custom threshold to determine the risk level
+    if probability > custom_threshold:
+        risk_level = "High Risk"
+    elif probability > 0.4:  # You can define another cutoff for moderate risk
+        risk_level = "Moderate Risk"
+    else:
+        risk_level = "Low Risk"
 
-# Display the risk level
-st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
+    # Display the risk level
+    st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
 
     # Use your model to predict
-prediction = model.predict(input_data)  # Assuming 'model' is your trained model
-risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
-alert = "High Risk Alert" if risk_level == "High Risk" else "No Alert"
+    prediction = model.predict(input_data)  # Assuming 'model' is your trained model
+    risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
+    alert = "High Risk Alert" if risk_level == "High Risk" else "No Alert"
 
     # Display risk level and alert
-st.write(f"Risk Level: {risk_level}, Alert: {alert}")
+    st.write(f"Risk Level: {risk_level}, Alert: {alert}")
+
