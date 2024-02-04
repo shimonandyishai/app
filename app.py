@@ -36,9 +36,10 @@ except Exception as e:
     st.error(f"An error occurred while loading the model: {e}")
 
 # Load heart data file
+@st.cache(allow_output_mutation=True)
 def load_data():
-    # Use a relative path from the Streamlit app script to the CSV file
-    return pd.read_csv('data/heart.csv')
+    # Since heart.csv is in the root directory of your project, you reference it directly
+    return pd.read_csv('heart.csv')
 
 data_heart = load_data()
 
