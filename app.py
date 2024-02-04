@@ -80,6 +80,7 @@ restecg = restecg_mapping[restecg]
 exng = 1 if exng == 'Yes' else 0
 slp = slp_mapping[slp]
 thall = thall_mapping[thall]
+caa = int(caa)  # Make sure caa is an integer
 
 # When the user clicks the 'Predict' button, make the prediction
 if st.button('Predict Risk'):
@@ -95,18 +96,15 @@ if st.button('Predict Risk'):
         'thalachh': [thalachh],
         'exng': [exng],
         'oldpeak': [oldpeak],
-        'slp': [slp],  # This needs mapping too if it's categorical
-    'caa': [caa],  # Assuming 'caa' is already in the correct numerical format
-    'thall': [thall]  # Make sure 'thall' is mapped correctly as well
-}
-
-
-input_df = pd.DataFrame(data)
-
-# Use the model to make a prediction
-prediction = model.predict(input_df)
-risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
-st.success(f"The predicted risk level is: {risk_level}")
+        'slp': [slp],
+        'caa': [caa],
+        'thall': [thall]
+    })
+    
+    # Use the model to make a prediction
+    prediction = model.predict(user_data)
+    risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
+    st.success(f"The predicted risk level is: {risk_level}")
 
 # Display the input features to the user
 st.subheader('User Input parameters')
