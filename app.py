@@ -39,61 +39,82 @@ def load_data():
     # Since heart.csv is in the root directory of your project, you reference it directly
     return pd.read_csv('heart.csv')
 
+# Define the numerical and categorical features as per your model training
+numerical_features = ['age', 'trtbps', 'chol', 'thalachh', 'oldpeak']
+categorical_features = ['sex', 'cp', 'fbs', 'restecg', 'exng', 'slp', 'caa', 'thall']
+
+# Define the mapping for categorical variables based on how your model was trained
+# For example, if 'cp' was one-hot encoded with the following mapping during training:
+# 'Typical Angina': 0, 'Atypical Angina': 1, 'Non-Anginal Pain': 2, 'Asymptomatic': 3
+# You should keep the same mapping here.
+
+cp_mapping = {'Typical Angina': 0, 'Atypical Angina': 1, 'Non-Anginal Pain': 2, 'Asymptomatic': 3}
+restecg_mapping = {'Normal': 0, 'Having ST-T Wave Abnormality': 1, 'Showing Probable or Definite Left Ventricular Hypertrophy': 2}
+slp_mapping = {'Upsloping': 0, 'Flat': 1, 'Downsloping': 2}
+thall_mapping = {'Normal': 0, 'Fixed Defect': 1, 'Reversible Defect': 2}
+
+
 data_heart = load_data()
 # Define the input fields for the parameters
 st.sidebar.header("User Input Parameters")
 
-def user_input_features():
-    age = st.sidebar.number_input("Age", value=30, min_value=18, max_value=100, step=1)
-    sex = st.sidebar.selectbox('Sex', ('Male', 'Female'))
-    cp = st.sidebar.selectbox('Chest Pain Type', ('Typical Angina', 'Atypical Angina', 'Non-Anginal Pain', 'Asymptomatic'))
-    trtbps = st.sidebar.number_input("Resting Blood Pressure", value=120, min_value=90, max_value=200, step=1)
-    chol = st.sidebar.number_input("Serum Cholestoral in mg/dl", value=200, min_value=100, max_value=400, step=1)
-    fbs = st.sidebar.selectbox('Fasting Blood Sugar > 120 mg/dl', ('True', 'False'))
-    restecg = st.sidebar.selectbox('Resting Electrocardiographic Results', ('Normal', 'Having ST-T Wave Abnormality', 'Showing Probable or Definite Left Ventricular Hypertrophy'))
-    thalachh = st.sidebar.number_input("Maximum Heart Rate Achieved", value=100, min_value=60, max_value=220, step=1)
-    exng = st.sidebar.selectbox('Exercise Induced Angina', ('Yes', 'No'))
-    oldpeak = st.sidebar.slider("ST depression induced by exercise relative to rest", 0.0, 6.0, 1.0)
-    slp = st.sidebar.selectbox('The Slope of The Peak Exercise ST Segment', ('Upsloping', 'Flat', 'Downsloping'))
-    caa = st.sidebar.number_input("Number of Major Vessels", 0, 4, step=1)
-    thall = st.sidebar.selectbox('Thalium Stress Test Result', ('Normal', 'Fixed Defect', 'Reversible Defect'))
+age = st.number_input('Age', min_value=18, max_value=120, value=30, step=1)
+sex = st.selectbox('Sex', options=['Male', 'Female'])
+cp = st.selectbox('Chest Pain Type', options=cp_mapping.keys())
+trtbps = st.number_input('Resting Blood Pressure (in mm Hg)', min_value=90, max_value=200, value=120, step=1)
+chol = st.number_input('Serum Cholestoral in mg/dl', min_value=100, max_value=600, value=200, step=1)
+fbs = st.radio('Fasting Blood Sugar > 120 mg/dl', options=['Yes', 'No'])
+restecg = st.selectbox('Resting Electrocardiographic Results', options=restecg_mapping.keys())
+thalachh = st.number_input('Maximum Heart Rate Achieved', min_value=60, max_value=220, value=100, step=1)
+exng = st.radio('Exercise Induced Angina', options=['Yes', 'No'])
+oldpeak = st.slider('ST Depression Induced by Exercise Relative to Rest', min_value=0.0, max_value=6.0, value=1.0, step=0.1)
+slp = st.selectbox('The Slope of The Peak Exercise ST Segment', options=slp_mapping.keys())
+caa = st.number_input('Number of Major Vessels (0-4) Colored by Fluoroscopy', min_value=0, max_value=4, value=0, step=1)
+thall = st.selectbox('Thallium Stress Test Result', options=thall_mapping.keys())
 
-    # Convert data to numerical values if necessary
-    sex = 1 if sex == 'Male' else 0
-    fbs = 1 if fbs == 'True' else 0
-    exng = 1 if exng == 'Yes' else 0
-    # Map the rest of the categorical variables as well, similar to 'sex' and 'fbs'
+# Convert categorical inputs to their corresponding numerical values
+sex = 1 if sex == 'Male' else 0
+cp = cp_mapping[cp]
+fbs = 1 if fbs == 'Yes' else 0
+restecg = restecg_mapping[restecg]
+exng = 1 if exng == 'Yes' else 0
+slp = slp_mapping[slp]
+thall = thall_mapping[thall]
 
-    # Create a DataFrame with the user input
-    data = {
-        'age': age,
-        'sex': sex,
-        'cp': cp,  # You would need to map this to your model's expected numerical values
-        'trtbps': trtbps,
-        'chol': chol,
-        'fbs': fbs,
-        'restecg': restecg,  # Map this as well
-        'thalachh': thalachh,
-        'exng': exng,
-        'oldpeak': oldpeak,
-        'slp': slp,  # Map this as well
-        'caa': caa,
-        'thall': thall  # Map this as well
-    }
-    features = pd.DataFrame(data, index=[0])
+# When the user clicks the 'Predict' button, make the prediction
+if st.button('Predict Risk'):
+    # Create a DataFrame from the user inputs
+    user_data = pd.DataFrame({
+        'age': [age],
+        'sex': [sex],
+        'cp': [cp],
+        'trtbps': [trtbps],
+        'chol': [chol],
+        'fbs': [fbs],
+        'restecg': [restecg],
+        'thalachh': [thalachh],
+        'exng': [exng],
+        'oldpeak': [oldpeak],
+        'slp': [slp],  # This needs mapping too if it's categorical
+    'caa': [caa],  # Assuming 'caa' is already in the correct numerical format
+    'thall': [thall]  # Make sure 'thall' is mapped correctly as well
+}
+
+        
+        features = pd.DataFrame(data, index=[0])
     return features
 
-input_df = user_input_features()
+input_df = pd.DataFrame(data)
+
+# Use the model to make a prediction
+prediction = model.predict(input_df)
+risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
+st.success(f"The predicted risk level is: {risk_level}")
 
 # Display the input features to the user
 st.subheader('User Input parameters')
 st.write(input_df)
 
-# Predict and display the result
-if st.button('Predict'):
-    result = model.predict(input_df)
-    risk_level = "High Risk" if result[0] == 1 else "Low Risk"
-    st.success(f"The predicted risk level is: {risk_level}")
 
 # Sidebar with customization options
 st.sidebar.header("Customization Options")
