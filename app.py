@@ -161,6 +161,27 @@ if st.button('Predict Heart Disease Risk') and filtered_data_heart is not None:
         # Add other necessary features with default or mean values
     }])
 
+    # Get user input and preprocess it
+input_df = user_input_features()
+
+# Predict the probability of the positive class (e.g., high risk)
+# If your model pipeline (`model`) already includes the preprocessor and classifier, you can call predict_proba directly on it
+probability = model.predict_proba(input_df)[0][1]
+
+# Define a custom threshold
+custom_threshold = 0.6  # This is an example, adjust based on your needs
+
+# Apply the custom threshold to determine the risk level
+if probability > custom_threshold:
+    risk_level = "High Risk"
+elif probability > 0.4:  # You can define another cutoff for moderate risk
+    risk_level = "Moderate Risk"
+else:
+    risk_level = "Low Risk"
+
+# Display the risk level
+st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
+
     # Use your model to predict
     prediction = model.predict(input_data)  # Assuming 'model' is your trained model
     risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
