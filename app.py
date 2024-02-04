@@ -40,6 +40,54 @@ def load_data():
     return pd.read_csv('heart.csv')
 
 data_heart = load_data()
+# Define the input fields for the parameters
+st.sidebar.header("User Input Parameters")
+
+def user_input_features():
+    age = st.sidebar.number_input("Age", value=30, min_value=18, max_value=100, step=1)
+    sex = st.sidebar.selectbox('Sex', ('Male', 'Female'))
+    cp = st.sidebar.selectbox('Chest Pain Type', ('Typical Angina', 'Atypical Angina', 'Non-Anginal Pain', 'Asymptomatic'))
+    trtbps = st.sidebar.number_input("Resting Blood Pressure", value=120, min_value=90, max_value=200, step=1)
+    chol = st.sidebar.number_input("Serum Cholestoral in mg/dl", value=200, min_value=100, max_value=400, step=1)
+    fbs = st.sidebar.selectbox('Fasting Blood Sugar > 120 mg/dl', ('True', 'False'))
+    restecg = st.sidebar.selectbox('Resting Electrocardiographic Results', ('Normal', 'Having ST-T Wave Abnormality', 'Showing Probable or Definite Left Ventricular Hypertrophy'))
+    thalachh = st.sidebar.number_input("Maximum Heart Rate Achieved", value=100, min_value=60, max_value=220, step=1)
+    exng = st.sidebar.selectbox('Exercise Induced Angina', ('Yes', 'No'))
+    oldpeak = st.sidebar.slider("ST depression induced by exercise relative to rest", 0.0, 6.0, 1.0)
+    slp = st.sidebar.selectbox('The Slope of The Peak Exercise ST Segment', ('Upsloping', 'Flat', 'Downsloping'))
+    caa = st.sidebar.number_input("Number of Major Vessels", 0, 4, step=1)
+    thall = st.sidebar.selectbox('Thalium Stress Test Result', ('Normal', 'Fixed Defect', 'Reversible Defect'))
+
+    # Convert data to numerical values if necessary
+    sex = 1 if sex == 'Male' else 0
+    fbs = 1 if fbs == 'True' else 0
+    exng = 1 if exng == 'Yes' else 0
+    # Map the rest of the categorical variables as well, similar to 'sex' and 'fbs'
+
+    # Create a DataFrame with the user input
+    data = {
+        'age': age,
+        'sex': sex,
+        'cp': cp,  # You would need to map this to your model's expected numerical values
+        'trtbps': trtbps,
+        'chol': chol,
+        'fbs': fbs,
+        'restecg': restecg,  # Map this as well
+        'thalachh': thalachh,
+        'exng': exng,
+        'oldpeak': oldpeak,
+        'slp': slp,  # Map this as well
+        'caa': caa,
+        'thall': thall  # Map this as well
+    }
+    features = pd.DataFrame(data, index=[0])
+    return features
+
+input_df = user_input_features()
+
+# Display the input features to the user
+st.subheader('User Input parameters')
+st.write(input_df)
 
 # Sidebar with customization options
 st.sidebar.header("Customization Options")
