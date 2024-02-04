@@ -106,10 +106,6 @@ if st.button('Predict Risk'):
     risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
     st.success(f"The predicted risk level is: {risk_level}")
 
-# Display the input features to the user
-st.subheader('User Input parameters')
-st.write(input_df)
-
 
 # Sidebar with customization options
 st.sidebar.header("Customization Options")
