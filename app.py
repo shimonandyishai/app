@@ -146,27 +146,27 @@ sim_thalachh = st.slider("Maximum Heart Rate Achieved", int(data_heart["thalachh
 sim_oldpeak = st.slider("ST Depression Induced by Exercise", float(data_heart["oldpeak"].min()), float(data_heart["oldpeak"].max()), float(data_heart["oldpeak"].mean()))
 
 
-    # Predict the probability of the positive class (e.g., high risk)
-    probability = model.predict_proba(input_df)[0][1]
+# Predict the probability of the positive class (e.g., high risk)
+probability = model.predict_proba(input_df)[0][1]
 
-    # Define a custom threshold
-    custom_threshold = 0.6  # This is an example, adjust based on your needs
+# Define a custom threshold
+custom_threshold = 0.6  # This is an example, adjust based on your needs
 
-    # Apply the custom threshold to determine the risk level
-    if probability > custom_threshold:
-        risk_level = "High Risk"
-    elif probability > 0.4:  # You can define another cutoff for moderate risk
-        risk_level = "Moderate Risk"
-    else:
-        risk_level = "Low Risk"
+# Apply the custom threshold to determine the risk level
+if probability > custom_threshold:
+    risk_level = "High Risk"
+elif probability > 0.4:  # You can define another cutoff for moderate risk
+    risk_level = "Moderate Risk"
+else:
+    risk_level = "Low Risk"
 
-    # Display the risk level
-    st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
+# Display the risk level
+st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
 
-    # Use your model to predict
-    prediction = model.predict(input_df)  # Use input_df for prediction
-    risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
-    alert = "High Risk Alert" if risk_level == "High Risk" else "No Alert"
+# Use your model to predict
+prediction = model.predict(input_df)  # Use input_df for prediction
+risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
+alert = "High Risk Alert" if risk_level == "High Risk" else "No Alert"
 
-    # Display risk level and alert
-    st.write(f"Risk Level: {risk_level}, Alert: {alert}")
+# Display risk level and alert
+st.write(f"Risk Level: {risk_level}, Alert: {alert}")
