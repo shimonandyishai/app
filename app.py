@@ -145,27 +145,6 @@ sim_trtbps = st.slider("Resting Blood Pressure", int(data_heart["trtbps"].min())
 sim_thalachh = st.slider("Maximum Heart Rate Achieved", int(data_heart["thalachh"].min()), int(data_heart["thalachh"].max()), int(data_heart["thalachh"].mean()))
 sim_oldpeak = st.slider("ST Depression Induced by Exercise", float(data_heart["oldpeak"].min()), float(data_heart["oldpeak"].max()), float(data_heart["oldpeak"].mean()))
 
-# Function to collect user inputs
-def user_input_features():
-    # Numerical inputs
-    age = st.sidebar.number_input('Age', min_value=18, max_value=120, value=30, step=1)
-    trtbps = st.sidebar.number_input('Resting Blood Pressure (in mm Hg)', min_value=90, max_value=200, value=120, step=1)
-    chol = st.sidebar.number_input('Serum Cholestoral in mg/dl', min_value=100, max_value=600, value=200, step=1)
-    thalachh = st.sidebar.number_input('Maximum Heart Rate Achieved', min_value=60, max_value=220, value=100, step=1)
-    oldpeak = st.sidebar.number_input('ST Depression Induced by Exercise Relative to Rest', min_value=0.0, max_value=6.0, value=1.0, step=0.1)
-
-    # Categorical inputs
-    sex = st.sidebar.selectbox('Sex', options=sex_options)
-    cp = st.sidebar.selectbox('Chest Pain Type', options=cp_options)
-    fbs = st.sidebar.selectbox('Fasting Blood Sugar > 120 mg/dl', options=fbs_options)
-    restecg = st.sidebar.selectbox('Resting Electrocardiographic Results', options=restecg_options)
-    exng = st.sidebar.selectbox('Exercise Induced Angina', options=exng_options)
-    slp = st.sidebar.selectbox('The Slope of The Peak Exercise ST Segment', options=slp_options)
-    caa = st.sidebar.selectbox('Number of Major Vessels (0-4) Colored by Fluoroscopy', options=caa_options)
-    thall = st.sidebar.selectbox('Thallium Stress Test Result', options=thall_options)
-
-    # Return the user inputs as a tuple
-    return age, trtbps, chol, thalachh, oldpeak, sex, cp, fbs, restecg, exng, slp, caa, thall
 
 # Get user input values
 age, trtbps, chol, thalachh, oldpeak, sex, cp, fbs, restecg, exng, slp, caa, thall = user_input_features()
