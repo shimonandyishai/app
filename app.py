@@ -148,45 +148,32 @@ sim_trtbps = st.slider("Resting Blood Pressure", int(data_heart["trtbps"].min())
 sim_thalachh = st.slider("Maximum Heart Rate Achieved", int(data_heart["thalachh"].min()), int(data_heart["thalachh"].max()), int(data_heart["thalachh"].mean()))
 sim_oldpeak = st.slider("ST Depression Induced by Exercise", float(data_heart["oldpeak"].min()), float(data_heart["oldpeak"].max()), float(data_heart["oldpeak"].mean()))
 
-# Predict button
-if st.button('Predict Heart Disease Risk') and filtered_data_heart is not None:
-    # Create a DataFrame with the selected values
-    input_data = pd.DataFrame([{
-        'age': age,
-        'trtbps': sim_trtbps,
-        'chol': sim_chol,
-        'thalachh': sim_thalachh,
-        'oldpeak': sim_oldpeak,
-        'sex': 1,  # Assuming 1 for male, 0 for female, adjust as necessary
-        'cp': 0,  # You need to adjust this based on your encoding
-        'fbs': 0,  # Assuming 0 for false, adjust as necessary
-        'restecg': 0,  # Adjust according to your model's training data
-        'exng': 0,  # Same as above
-        'slp': 0,  # Same as above
-        'caa': 0,  # Same as above
-        'thall': 0  # Same as above
-        # Add other necessary features with default or mean values
-    }])
+    # Return the user inputs as a tuple
+    return age, trtbps, chol, thalachh, oldpeak, sex, cp, fbs, restecg, exng, slp, caa, thall
 
-    # Get user input and preprocess it
+# Get user input values
+age, trtbps, chol, thalachh, oldpeak, sex, cp, fbs, restecg, exng, slp, caa, thall = user_input_features()
+
+# Predict button
+if st.button('Predict Heart Disease Risk'):
+    # Create a DataFrame from the user inputs
     input_df = pd.DataFrame([{
         'age': age,
-        'sex': sex,
-        'cp': cp,
         'trtbps': trtbps,
         'chol': chol,
+        'thalachh': thalachh,
+        'oldpeak': oldpeak,
+        'sex': sex,
+        'cp': cp,
         'fbs': fbs,
         'restecg': restecg,
-        'thalachh': thalachh,
         'exng': exng,
-        'oldpeak': oldpeak,
         'slp': slp,
         'caa': caa,
         'thall': thall
     }])
 
     # Predict the probability of the positive class (e.g., high risk)
-    # If your model pipeline (`model`) already includes the preprocessor and classifier, you can call predict_proba directly on it
     probability = model.predict_proba(input_df)[0][1]
 
     # Define a custom threshold
