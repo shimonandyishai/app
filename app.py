@@ -120,12 +120,12 @@ if st.button('Predict Risk'):
     probability = model.predict_proba(processed_input)[0][1]
 
     # Define a custom threshold
-    custom_threshold = 0.3
+    custom_threshold = 0.6
 
     # Apply the custom threshold to determine the risk level
     if probability > custom_threshold:
         risk_level = "High Risk"
-    elif probability > 0.2:
+    elif probability > 0.4:
         risk_level = "Moderate Risk"
     else:
         risk_level = "Low Risk"
@@ -207,12 +207,12 @@ if st.button('Predict Heart Disease Risk') and filtered_data_heart is not None:
     probability = model.predict_proba(input_df)[0][1]
 
     # Define a custom threshold
-    custom_threshold = 0.3
+    custom_threshold = 0.6
 
     # Apply the custom threshold to determine the risk level
     if probability > custom_threshold:
         risk_level = "High Risk"
-    elif probability > 0.2:
+    elif probability > 0.4:
         risk_level = "Moderate Risk"
     else:
         risk_level = "Low Risk"
