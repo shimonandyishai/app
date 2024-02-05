@@ -125,7 +125,7 @@ if st.button('Predict Risk'):
     # Apply the custom threshold to determine the risk level
     if probability > custom_threshold:
         risk_level = "High Risk"
-    elif probability > 0.2
+    elif probability > 0.2:
         risk_level = "Moderate Risk"
     else:
         risk_level = "Low Risk"
