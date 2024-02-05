@@ -148,24 +148,11 @@ sim_oldpeak = st.slider("ST Depression Induced by Exercise", float(data_heart["o
 # Predict button
 if st.button('Predict Heart Disease Risk'):
     # Create a DataFrame from the user inputs
-    input_df = pd.DataFrame([{
-        'age': age,
-        'trtbps': trtbps,
-        'chol': chol,
-        'thalachh': thalachh,
-        'oldpeak': oldpeak,
-        'sex': sex,
-        'cp': cp,
-        'fbs': fbs,
-        'restecg': restecg,
-        'exng': exng,
-        'slp': slp,
-        'caa': caa,
-        'thall': thall
-    }])
-
-    # Predict the probability of the positive class (e.g., high risk)
+    prediction = model.predict(input_df)
     probability = model.predict_proba(input_df)[0][1]
+
+    st.write(f'Prediction: {prediction[0]}')
+    st.write(f'Prediction Probability: {probability:.2f}')
 
     # Define a custom threshold
     custom_threshold = 0.6  # This is an example, adjust based on your needs
