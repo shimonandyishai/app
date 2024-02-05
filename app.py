@@ -39,90 +39,58 @@ def load_data():
     # Since heart.csv is in the root directory of your project, you reference it directly
     return pd.read_csv('heart.csv')
 
-# Define the numerical and categorical features as per your model training
+# Define the numerical and categorical features as per the model training
 numerical_features = ['age', 'trtbps', 'chol', 'thalachh', 'oldpeak']
 categorical_features = ['sex', 'cp', 'fbs', 'restecg', 'exng', 'slp', 'caa', 'thall']
 
-# Define the mapping for categorical variables based on how your model was trained
-# For example, if 'cp' was one-hot encoded with the following mapping during training:
-# 'Typical Angina': 0, 'Atypical Angina': 1, 'Non-Anginal Pain': 2, 'Asymptomatic': 3
-# You should keep the same mapping here.
+# Map categorical features to their respective options (based on your training dataset)
+sex_options = [0, 1]  # Assuming 0 for female, 1 for male
+cp_options = [0, 1, 2, 3]  # As per the type of chest pain
+fbs_options = [0, 1]  # Assuming 0 for FBS <= 120 mg/dl, 1 for FBS > 120 mg/dl
+restecg_options = [0, 1, 2]  # Resting electrocardiographic results options
+exng_options = [0, 1]  # Exercise induced angina options
+slp_options = [0, 1, 2]  # Slope of the peak exercise ST segment options
+caa_options = [0, 1, 2, 3, 4]  # Number of major vessels colored by fluoroscopy
+thall_options = [0, 1, 2, 3]  # Thallium stress test results
 
-cp_mapping = {'Typical Angina': 0, 'Atypical Angina': 1, 'Non-Anginal Pain': 2, 'Asymptomatic': 3}
-restecg_mapping = {'Normal': 0, 'Having ST-T Wave Abnormality': 1, 'Showing Probable or Definite Left Ventricular Hypertrophy': 2}
-slp_mapping = {'Upsloping': 0, 'Flat': 1, 'Downsloping': 2}
-thall_mapping = {'Normal': 0, 'Fixed Defect': 1, 'Reversible Defect': 2}
-
-# Define a function to collect user inputs and create a DataFrame
+# Function to collect user inputs
 def user_input_features():
-    # Create a dictionary to store user inputs
-    input_features = {
-        'age': age,
-        'sex': sex,
-        'cp': cp,
-        'trtbps': trtbps,
-        'chol': chol,
-        'fbs': fbs,
-        'restecg': restecg,
-        'thalachh': thalachh,
-        'exng': exng,
-        'oldpeak': oldpeak,
-        'slp': slp,
-        'caa': caa,
-        'thall': thall
-    }
+    # Numerical inputs
+    age = st.sidebar.number_input('Age', min_value=18, max_value=120, value=30, step=1)
+    trtbps = st.sidebar.number_input('Resting Blood Pressure (in mm Hg)', min_value=90, max_value=200, value=120, step=1)
+    chol = st.sidebar.number_input('Serum Cholestoral in mg/dl', min_value=100, max_value=600, value=200, step=1)
+    thalachh = st.sidebar.number_input('Maximum Heart Rate Achieved', min_value=60, max_value=220, value=100, step=1)
+    oldpeak = st.sidebar.number_input('ST Depression Induced by Exercise Relative to Rest', min_value=0.0, max_value=6.0, value=1.0, step=0.1)
+
+    # Categorical inputs
+    sex = st.sidebar.selectbox('Sex', options=sex_options)
+    cp = st.sidebar.selectbox('Chest Pain Type', options=cp_options)
+    fbs = st.sidebar.selectbox('Fasting Blood Sugar > 120 mg/dl', options=fbs_options)
+    restecg = st.sidebar.selectbox('Resting Electrocardiographic Results', options=restecg_options)
+    exng = st.sidebar.selectbox('Exercise Induced Angina', options=exng_options)
+    slp = st.sidebar.selectbox('The Slope of The Peak Exercise ST Segment', options=slp_options)
+    caa = st.sidebar.selectbox('Number of Major Vessels (0-4) Colored by Fluoroscopy', options=caa_options)
+    thall = st.sidebar.selectbox('Thallium Stress Test Result', options=thall_options)
 
     # Create a DataFrame from the user inputs
-    input_df = pd.DataFrame(input_features, index=[0])
-    return input_df
+    input_data = {
+        'age': age, 'trtbps': trtbps, 'chol': chol, 'thalachh': thalachh, 'oldpeak': oldpeak,
+        'sex': sex, 'cp': cp, 'fbs': fbs, 'restecg': restecg, 'exng': exng, 'slp': slp, 'caa': caa, 'thall': thall
+    }
+    features = pd.DataFrame(input_data, index=[0])
+    return features
 
-data_heart = load_data()
-# Define the input fields for the parameters
-st.sidebar.header("User Input Parameters")
+# Display the user input features
+input_df = user_input_features()
 
-age = st.number_input('Age', min_value=18, max_value=120, value=30, step=1)
-sex = st.selectbox('Sex', options=['Male', 'Female'])
-cp = st.selectbox('Chest Pain Type', options=cp_mapping.keys())
-trtbps = st.number_input('Resting Blood Pressure (in mm Hg)', min_value=90, max_value=200, value=120, step=1)
-chol = st.number_input('Serum Cholestoral in mg/dl', min_value=100, max_value=600, value=200, step=1)
-fbs = st.radio('Fasting Blood Sugar > 120 mg/dl', options=['Yes', 'No'])
-restecg = st.selectbox('Resting Electrocardiographic Results', options=restecg_mapping.keys())
-thalachh = st.number_input('Maximum Heart Rate Achieved', min_value=60, max_value=220, value=100, step=1)
-exng = st.radio('Exercise Induced Angina', options=['Yes', 'No'])
-oldpeak = st.slider('ST Depression Induced by Exercise Relative to Rest', min_value=0.0, max_value=6.0, value=1.0, step=0.1)
-slp = st.selectbox('The Slope of The Peak Exercise ST Segment', options=slp_mapping.keys())
-caa = st.number_input('Number of Major Vessels (0-4) Colored by Fluoroscopy', min_value=0, max_value=4, value=0, step=1)
-thall = st.selectbox('Thallium Stress Test Result', options=thall_mapping.keys())
-
-# Convert categorical inputs to their corresponding numerical values
-sex = 1 if sex == 'Male' else 0
-cp = cp_mapping[cp]
-fbs = 1 if fbs == 'Yes' else 0
-restecg = restecg_mapping[restecg]
-
-# When the user clicks the 'Predict' button
+# Predict button
 if st.button('Predict Risk'):
-    # Create a DataFrame with the selected values
-    input_df = pd.DataFrame([{
-        'age': age,
-        'sex': sex,
-        'cp': cp,
-        'trtbps': trtbps,
-        'chol': chol,
-        'fbs': fbs,
-        'restecg': restecg,
-        'thalachh': thalachh,
-        'exng': exng,
-        'oldpeak': oldpeak,
-        'slp': slp,
-        'caa': caa,
-        'thall': thall
-    }])
+    # Use the model to make predictions
+    prediction = model.predict(input_df)
+    probability = model.predict_proba(input_df)[0][1]
 
-    # If your classifier is part of a pipeline, use the whole model to predict
-    # Otherwise, use the classifier directly
-    processed_input = model.named_steps['preprocessor'].transform(input_df)  # If separate preprocessing step is needed
-    probability = model.predict_proba(processed_input)[0][1]
+    st.write(f'Prediction: {prediction[0]}')
+    st.write(f'Prediction Probability: {probability:.2f}')
 
     # Define a custom threshold
     custom_threshold = 0.6  # This is an example, adjust based on your needs
