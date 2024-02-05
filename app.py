@@ -42,7 +42,6 @@ data_heart = load_data()
 # Debugging: Print or display the first few rows of the DataFrame to check its structure
 st.write("First few rows of data:", data_heart.head())
 
-
 # Define the numerical and categorical features as per the model training
 numerical_features = ['age', 'trtbps', 'chol', 'thalachh', 'oldpeak']
 categorical_features = ['sex', 'cp', 'fbs', 'restecg', 'exng', 'slp', 'caa', 'thall']
@@ -57,7 +56,6 @@ slp_options = [0, 1, 2]  # Slope of the peak exercise ST segment options
 caa_options = [0, 1, 2, 3, 4]  # Number of major vessels colored by fluoroscopy
 thall_options = [0, 1, 2, 3]  # Thallium stress test results
 
-data_heart = load_data()
 # Define the input fields for the parameters
 st.sidebar.header("User Input Parameters")
 
@@ -123,11 +121,11 @@ high_risk_alert = st.sidebar.checkbox("High Risk Alerts", value=True)
 st.subheader("Predictive Analysis")
 st.markdown("Analyze patient data to predict heart disease risk.")
 with st.expander("Filter Data"):
-    age_range = st.slider('Select Age Range', min_value=int(data_heart['age'].min()), max_value=int(data_heart['age'].max()), value=[30, 60], key="age_range_slider")
-    chol_range = st.slider('Select Cholesterol Range', min_value=int(data_heart['chol'].min()), max_value=int(data_heart['chol'].max()), value=[100, 200], key="chol_range_slider")
-    filtered_data_heart = data_heart[(data_heart['age'] >= age_range[0]) & (data_heart['age'] <= age_range[1]) & (data_heart['chol'] >= chol_range[0]) & (data_heart['chol'] <= chol_range[1])]
-
-st.dataframe(filtered_data_heart)
+    filtered_data_heart = data_heart[
+        (data_heart['age'] >= age_range[0]) & (data_heart['age'] <= age_range[1]) &
+        (data_heart['chol'] >= chol_range[0]) & (data_heart['chol'] <= chol_range[1])
+    ]
+    st.dataframe(filtered_data_heart)
 
 # Visualization Section
 st.subheader("Data Visualization")
