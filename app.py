@@ -21,11 +21,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Title for the app
+# Title for your app
 st.title('Heart Health Analysis Dashboard')
 st.markdown("A comprehensive tool for analyzing and predicting heart health risks.")
 
-# Load the trained model
+# Load your trained model
 model_path = 'model.pkl'
 try:
     with open(model_path, 'rb') as file:
@@ -36,14 +36,18 @@ except Exception as e:
 # Load heart data file
 @st.cache(allow_output_mutation=True)
 def load_data():
-    # Since heart.csv is in the root directory of the project, reference it directly
+    # Since heart.csv is in the root directory of your project, you reference it directly
     return pd.read_csv('heart.csv')
 
-# Define the numerical and categorical features as per the model training
+# Define the numerical and categorical features as per your model training
 numerical_features = ['age', 'trtbps', 'chol', 'thalachh', 'oldpeak']
 categorical_features = ['sex', 'cp', 'fbs', 'restecg', 'exng', 'slp', 'caa', 'thall']
 
-# Define the mapping for categorical variables based on how the model was trained
+# Define the mapping for categorical variables based on how your model was trained
+# For example, if 'cp' was one-hot encoded with the following mapping during training:
+# 'Typical Angina': 0, 'Atypical Angina': 1, 'Non-Anginal Pain': 2, 'Asymptomatic': 3
+# You should keep the same mapping here.
+
 cp_mapping = {'Typical Angina': 0, 'Atypical Angina': 1, 'Non-Anginal Pain': 2, 'Asymptomatic': 3}
 restecg_mapping = {'Normal': 0, 'Having ST-T Wave Abnormality': 1, 'Showing Probable or Definite Left Ventricular Hypertrophy': 2}
 slp_mapping = {'Upsloping': 0, 'Flat': 1, 'Downsloping': 2}
@@ -115,17 +119,18 @@ if st.button('Predict Risk'):
         'thall': thall
     }])
 
-    
+    # If your classifier is part of a pipeline, use the whole model to predict
+    # Otherwise, use the classifier directly
     processed_input = model.named_steps['preprocessor'].transform(input_df)  # If separate preprocessing step is needed
     probability = model.predict_proba(processed_input)[0][1]
 
     # Define a custom threshold
-    custom_threshold = 0.6
+    custom_threshold = 0.6  # This is an example, adjust based on your needs
 
     # Apply the custom threshold to determine the risk level
     if probability > custom_threshold:
         risk_level = "High Risk"
-    elif probability > 0.4:
+    elif probability > 0.4:  # You can define another cutoff for moderate risk
         risk_level = "Moderate Risk"
     else:
         risk_level = "Low Risk"
@@ -176,14 +181,15 @@ if st.button('Predict Heart Disease Risk') and filtered_data_heart is not None:
         'chol': sim_chol,
         'thalachh': sim_thalachh,
         'oldpeak': sim_oldpeak,
-        'sex': 1,  # 1 for male, 0 for female
-        'cp': 0,  
-        'fbs': 0,  # 0 for f
-        'restecg': 0,  
-        'exng': 0,  
+        'sex': 1,  # Assuming 1 for male, 0 for female, adjust as necessary
+        'cp': 0,  # You need to adjust this based on your encoding
+        'fbs': 0,  # Assuming 0 for false, adjust as necessary
+        'restecg': 0,  # Adjust according to your model's training data
+        'exng': 0,  # Same as above
         'slp': 0,  # Same as above
         'caa': 0,  # Same as above
         'thall': 0  # Same as above
+        # Add other necessary features with default or mean values
     }])
 
     # Get user input and preprocess it
@@ -203,16 +209,17 @@ if st.button('Predict Heart Disease Risk') and filtered_data_heart is not None:
         'thall': thall
     }])
 
-    # Predict the probability of the positive class
+    # Predict the probability of the positive class (e.g., high risk)
+    # If your model pipeline (`model`) already includes the preprocessor and classifier, you can call predict_proba directly on it
     probability = model.predict_proba(input_df)[0][1]
 
     # Define a custom threshold
-    custom_threshold = 0.6
+    custom_threshold = 0.6  # This is an example, adjust based on your needs
 
     # Apply the custom threshold to determine the risk level
     if probability > custom_threshold:
         risk_level = "High Risk"
-    elif probability > 0.4:
+    elif probability > 0.4:  # You can define another cutoff for moderate risk
         risk_level = "Moderate Risk"
     else:
         risk_level = "Low Risk"
@@ -220,11 +227,10 @@ if st.button('Predict Heart Disease Risk') and filtered_data_heart is not None:
     # Display the risk level
     st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
 
-    # Use the model to predict
+    # Use your model to predict
     prediction = model.predict(input_data)  # Assuming 'model' is your trained model
     risk_level = "High Risk" if prediction[0] == 1 else "Low Risk"
     alert = "High Risk Alert" if risk_level == "High Risk" else "No Alert"
 
     # Display risk level and alert
     st.write(f"Risk Level: {risk_level}, Alert: {alert}")
-
