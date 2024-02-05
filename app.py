@@ -109,7 +109,7 @@ if st.sidebar.button('Predict Risk'):
         risk_level = "Low Risk"
 
     # Display the risk level
-    st.success(f"The predicted risk level is: {risk_level} (Probability: {probability:.2f})")
+    st.sidebar.success(f"Predicted Risk Level: {risk_level} (Probability: {probability:.2f})")
 
 # Sidebar with customization options
 st.sidebar.header("Customization Options")
