@@ -119,16 +119,7 @@ high_risk_alert = st.sidebar.checkbox("High Risk Alerts", value=True)
 st.subheader("Predictive Analysis")
 st.markdown("Analyze patient data to predict heart disease risk.")
 with st.expander("Filter Data"):
-    # Ensure data_heart is loaded and has the 'age' column
-    if 'age' in data_heart.columns and not data_heart.empty:
-        age_min = int(data_heart['age'].min())
-        age_max = int(data_heart['age'].max())
-    else:
-        # Default values if data_heart is not loaded properly
-        age_min, age_max = 0, 100
-        st.warning("Warning: Data not loaded correctly. Using default age range.")
-
-    age_range = st.slider('Select Age Range', min_value=age_min, max_value=age_max, value=[30, 60], key="age_range_slider")
+    age_range = st.slider('Select Age Range', min_value=int(data_heart['age'].min()), max_value=int(data_heart['age'].max()), value=[30, 60], key="age_range_slider")
     chol_range = st.slider('Select Cholesterol Range', min_value=int(data_heart['chol'].min()), max_value=int(data_heart['chol'].max()), value=[100, 200], key="chol_range_slider")
     filtered_data_heart = data_heart[(data_heart['age'] >= age_range[0]) & (data_heart['age'] <= age_range[1]) & (data_heart['chol'] >= chol_range[0]) & (data_heart['chol'] <= chol_range[1])]
 
