@@ -66,15 +66,15 @@ def user_input_features():
     thalachh = st.sidebar.number_input('Maximum Heart Rate Achieved', min_value=60, max_value=220, value=100, step=1)
     oldpeak = st.sidebar.number_input('ST Depression Induced by Exercise Relative to Rest', min_value=0.0, max_value=6.0, value=1.0, step=0.1)
 
-    # Categorical inputs
-    sex = st.sidebar.selectbox('Sex', options=sex_options)
-    cp = st.sidebar.selectbox('Chest Pain Type', options=cp_options)
-    fbs = st.sidebar.selectbox('Fasting Blood Sugar > 120 mg/dl', options=fbs_options)
-    restecg = st.sidebar.selectbox('Resting Electrocardiographic Results', options=restecg_options)
-    exng = st.sidebar.selectbox('Exercise Induced Angina', options=exng_options)
-    slp = st.sidebar.selectbox('The Slope of The Peak Exercise ST Segment', options=slp_options)
-    caa = st.sidebar.selectbox('Number of Major Vessels (0-4) Colored by Fluoroscopy', options=caa_options)
-    thall = st.sidebar.selectbox('Thallium Stress Test Result', options=thall_options)
+    # Categorical inputs with actual labels
+    sex = st.sidebar.selectbox('Sex', options=["Female", "Male"])
+    cp = st.sidebar.selectbox('Chest Pain Type', options=["Typical Angina", "Atypical Angina", "Non-anginal Pain", "Asymptomatic"])
+    fbs = st.sidebar.selectbox('Fasting Blood Sugar > 120 mg/dl', options=["No", "Yes"])
+    restecg = st.sidebar.selectbox('Resting Electrocardiographic Results', options=["Normal", "ST-T Wave Abnormality", "Left Ventricular Hypertrophy"])
+    exng = st.sidebar.selectbox('Exercise Induced Angina', options=["No", "Yes"])
+    slp = st.sidebar.selectbox('The Slope of The Peak Exercise ST Segment', options=["Upsloping", "Flat", "Downsloping"])
+    caa = st.sidebar.selectbox('Number of Major Vessels (0-4) Colored by Fluoroscopy', options=["0", "1", "2", "3", "4"])
+    thall = st.sidebar.selectbox('Thallium Stress Test Result', options=["Normal", "Fixed Defect", "Reversible Defect"])
 
     # Create a DataFrame from the user inputs
     input_data = {
@@ -83,7 +83,6 @@ def user_input_features():
     }
     features = pd.DataFrame(input_data, index=[0])
     return features
-
 # Display the user input features
 input_df = user_input_features()
 
