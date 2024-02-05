@@ -33,11 +33,22 @@ try:
 except Exception as e:
     st.error(f"An error occurred while loading the model: {e}")
     
-# Load heart data file
 @st.cache(allow_output_mutation=True)
 def load_data():
-    # Since heart.csv is in the root directory of your project, you reference it directly
     return pd.read_csv('heart.csv')
+
+data_heart = load_data()
+
+# Debugging: Print or display the first few rows of the DataFrame to check its structure
+st.write("First few rows of data:", data_heart.head())
+
+# Debugging: Check if 'age' column exists and DataFrame is not empty
+if 'age' in data_heart.columns and not data_heart.empty:
+    age_min = int(data_heart['age'].min())
+    age_max = int(data_heart['age'].max())
+    age_range = st.slider('Select Age Range', min_value=age_min, max_value=age_max, value=[30, 60], key="age_range_slider")
+else:
+    st.error("Error: 'age' column not found in data or data is empty.")
 
 # Define the numerical and categorical features as per the model training
 numerical_features = ['age', 'trtbps', 'chol', 'thalachh', 'oldpeak']
