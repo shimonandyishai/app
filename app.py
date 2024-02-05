@@ -152,7 +152,7 @@ sim_oldpeak = st.slider("ST Depression Induced by Exercise", float(data_heart["o
 if st.button('Predict Heart Disease Risk') and filtered_data_heart is not None:
     # Create a DataFrame with the selected values
     input_data = pd.DataFrame([{
-        'age': data_heart['age'].mean(),  # Mean age for the sake of example
+        'age': age,
         'trtbps': sim_trtbps,
         'chol': sim_chol,
         'thalachh': sim_thalachh,
