@@ -88,7 +88,8 @@ def user_input_features():
 input_df = user_input_features()
 
 # Predict button
-if st.button('Predict Risk'):
+# Predict button in the sidebar
+if st.sidebar.button('Predict Risk'):
     # Use the model to make predictions
     prediction = model.predict(input_df)
     probability = model.predict_proba(input_df)[0][1]
