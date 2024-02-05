@@ -53,6 +53,10 @@ slp_options = [0, 1, 2]  # Slope of the peak exercise ST segment options
 caa_options = [0, 1, 2, 3, 4]  # Number of major vessels colored by fluoroscopy
 thall_options = [0, 1, 2, 3]  # Thallium stress test results
 
+data_heart = load_data()
+# Define the input fields for the parameters
+st.sidebar.header("User Input Parameters")
+
 # Function to collect user inputs
 def user_input_features():
     # Numerical inputs
