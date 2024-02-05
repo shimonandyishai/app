@@ -146,28 +146,6 @@ sim_thalachh = st.slider("Maximum Heart Rate Achieved", int(data_heart["thalachh
 sim_oldpeak = st.slider("ST Depression Induced by Exercise", float(data_heart["oldpeak"].min()), float(data_heart["oldpeak"].max()), float(data_heart["oldpeak"].mean()))
 
 
-# Get user input values
-age, trtbps, chol, thalachh, oldpeak, sex, cp, fbs, restecg, exng, slp, caa, thall = user_input_features()
-
-# Predict button
-if st.button('Predict Heart Disease Risk'):
-    # Create a DataFrame from the user inputs
-    input_df = pd.DataFrame([{
-        'age': age,
-        'trtbps': trtbps,
-        'chol': chol,
-        'thalachh': thalachh,
-        'oldpeak': oldpeak,
-        'sex': sex,
-        'cp': cp,
-        'fbs': fbs,
-        'restecg': restecg,
-        'exng': exng,
-        'slp': slp,
-        'caa': caa,
-        'thall': thall
-    }])
-
     # Predict the probability of the positive class (e.g., high risk)
     probability = model.predict_proba(input_df)[0][1]
 
