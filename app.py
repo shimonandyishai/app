@@ -39,8 +39,6 @@ def load_data():
 
 data_heart = load_data()
 
-# Debugging: Print or display the first few rows of the DataFrame to check its structure
-st.write("First few rows of data:", data_heart.head())
 
 # Define the numerical and categorical features as per the model training
 numerical_features = ['age', 'trtbps', 'chol', 'thalachh', 'oldpeak']
